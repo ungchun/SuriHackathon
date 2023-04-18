@@ -1,18 +1,23 @@
 import SwiftUI
 
 struct MainView: View {
+    
+    @ObservedObject var viewmodel: MainViewModel = MainViewModel()
+    
     var body: some View {
-        ZStack {
-            Color(hex: 0xFFFDF2)
-            VStack(spacing: 0) {
-                OnTheInstrumentView()
-                InstrumentView()
-                NoteView() // 112
-                PlayPauseStopRedoView()
-                SoundView()
-                Spacer()
-            }
-        }.ignoresSafeArea()
+        NavigationView {
+            ZStack {
+                Color(hex: 0xFFFDF2)
+                VStack(spacing: 0) {
+                    OnTheInstrumentView()
+                    InstrumentView(viewmodel: viewmodel)
+                    NoteView(viewmodel: viewmodel) // 112
+                    PlayPauseStopRedoView(viewmodel: viewmodel)
+                    SoundView(viewmodel: viewmodel)
+                    Spacer()
+                }
+            }.ignoresSafeArea()
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
@@ -22,21 +27,18 @@ struct OnTheInstrumentView: View {
             Image("topLeading")
                 .offset(x: 40, y: 40)
             Spacer()
-            Button {
-                
+            NavigationLink {
+                JangDanView()
             } label: {
                 Image("topTrailing")
             }
             .offset(x: -40, y: 40)
-            
-                
         }
-        Button {
-            
+        NavigationLink {
+            InstrumentsView()
         } label: {
             Image("instruments")
         }
-        .offset(y: 70)
         Text("Tap to turn on / off the sounds of each instruments.")
             .font(Font.custom("Kavivanar-Regular", size: 14))
             .offset(y: 102)
@@ -44,12 +46,14 @@ struct OnTheInstrumentView: View {
 }
 
 struct InstrumentView: View {
+    @ObservedObject var viewmodel: MainViewModel
+    
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .fill(Color(hex: 0xFFBC6C))
             .frame(width: 802, height: 112)
             .overlay {
-                EachInstrumentView()
+                EachInstrumentView(viewmodel: viewmodel)
             }
             .offset(y: 113)
     }
@@ -57,19 +61,42 @@ struct InstrumentView: View {
 
 struct EachInstrumentView: View {
     
+    @ObservedObject var viewmodel: MainViewModel
     @State var isActive: [Bool] = [true, true, true, true]
+    @State var isBukOn = true
+    @State var isKkOn = true
+    @State var isjangOn = true
+    @State var isJingOn = true
     
-    let activeImage = ["buk", "kkwaenggawari", "janggu", "instJing"]
+    let activeImage = ["buk", "kkwaenggawari", "janggu", "activateJing"]
     let unactiveImage = ["unactiveBuk", "unactiveKkwaenggawari", "unactiveJanggu", "unactiveJing"]
     
     var body: some View {
         HStack(spacing: 66) {
-            ForEach(0..<4) { index in
-                Button {
-                    isActive[index].toggle()
-                } label: {
-                    Image(isActive[index] ? activeImage[index] : unactiveImage[index])
-                }
+            
+            Button {
+                viewmodel.isBukActivate = ()
+                isBukOn.toggle()
+            } label: {
+                Image(isBukOn ? activeImage[0] : unactiveImage[0])
+            }
+            Button {
+                viewmodel.isKkwaenggwariActivate = ()
+                isKkOn.toggle()
+            } label: {
+                Image(isKkOn ? activeImage[1] : unactiveImage[1])
+            }
+            Button {
+                viewmodel.isJangguActivate = ()
+                isjangOn.toggle()
+            } label: {
+                Image(isjangOn ? activeImage[2] : unactiveImage[2])
+            }
+            Button {
+                viewmodel.isJingActivate = ()
+                isJingOn.toggle()
+            } label: {
+                Image(isJingOn ? activeImage[3] : unactiveImage[3])
             }
         }
     }
@@ -80,28 +107,67 @@ struct NoteView: View {
     let buttonWidth: CGFloat = 75
     let buttonHeight: CGFloat = 40
     let items: [Instrumental] = [.buk, .kkwaenggwari, .janggu, .jing]
+    @ObservedObject var viewmodel: MainViewModel
     @State var touchIndex = 0
     // 인덱스, 악기
     
     var body: some View {
         ZStack {
-            VStack(spacing: 0) {
-                ForEach(items) { instrumental in
-                    HStack(spacing: 0) {
-                        ForEach(1..<16) { index in
+            HStack(spacing: 0) {
+                ForEach(viewmodel.musicSheet.musicSheetSection, id: \.id) { section in
+                    if section.id != 0 {
+                        VStack(spacing: 0) {
                             Rectangle()
-                                .fill(Color(hex: 0xFFFDF2))
+                                .fill(section == viewmodel.currentSection ? .blue : Color(hex: 0xFFFDF2))
                                 .frame(width: buttonWidth, height: buttonHeight)
                                 .border(.black)
                                 .overlay(
                                     VStack {
-                                        Text("\(String(describing: instrumental))")
-                                        Text("\(index)")
+                                        Text(section.buk.name)
                                     }
                                 )
                                 .onTapGesture {
-                                    print(index)
-                                    print(instrumental)
+                                    viewmodel.tapSectionNInstrumental = (section.id, .buk)
+                                }
+                            Rectangle()
+                                .fill(section == viewmodel.currentSection ? .blue : Color(hex: 0xFFFDF2))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                                .border(.black)
+                                .overlay(
+                                    VStack {
+                                        Text(section.kkwaenggwari.name)
+                                    }
+                                )
+                                .onTapGesture {
+                                    viewmodel.tapSectionNInstrumental = (section.id, .kkwaenggwari)
+                                    
+                                }
+                            Rectangle()
+                                .fill(section == viewmodel.currentSection ? .blue : Color(hex: 0xFFFDF2))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                                .border(.black)
+                                .overlay(
+                                    VStack {
+                                        Text(section.janggu.name)
+                                        
+                                    }
+                                )
+                                .onTapGesture {
+                                    viewmodel.tapSectionNInstrumental = (section.id, .janggu)
+                                }
+                            
+                            Rectangle()
+                                .fill(section == viewmodel.currentSection ? .blue : Color(hex: 0xFFFDF2))
+                                .frame(width: buttonWidth, height: buttonHeight)
+                                .border(.black)
+                                .overlay(
+                                    VStack {
+                                        Text(section.jing.name)
+                                        
+                                    }
+                                )
+                                .onTapGesture {
+                                    viewmodel.tapSectionNInstrumental = (section.id, .jing)
                                 }
                         }
                     }
@@ -113,11 +179,14 @@ struct NoteView: View {
 }
 
 struct PlayPauseStopRedoView: View {
+    
+    @ObservedObject var viewmodel: MainViewModel
+    
     var body: some View {
         ZStack {// 129 139
             HStack(spacing: 25) {
                 Button {
-                    
+                    viewmodel.tapPlay = true
                 } label: {
                     Image("play")
                 }
@@ -148,46 +217,52 @@ struct PlayPauseStopRedoView: View {
 }
 
 struct SoundView: View {
+    
+    @ObservedObject var viewmodel: MainViewModel
     // AllSounds
     var body: some View {
         VStack {
             HStack {
-                ForEach(0..<4) { Int in
+                ForEach(0..<4) { index in
                     Button {
-                        
+                        viewmodel.tapSound = viewmodel.allSounds[index]
                     } label: {
-                        Image("deo")
+                        Image(viewmodel.allSounds[index].name)
+                            .opacity(viewmodel.allSounds[index].isActivate ? 1 : 0.4)
                     }
                     .padding(.trailing, 30)
                 }
                 .offset(x: 97)
                 Spacer()
-                ForEach(4..<8) { Int in
+                ForEach(4..<8) { index in
                     Button {
-                        
+                        viewmodel.tapSound = viewmodel.allSounds[index]
                     } label: {
-                        Image("deo")
+                        Image(viewmodel.allSounds[index].name)
+                            .opacity(viewmodel.allSounds[index].isActivate ? 1 : 0.4)
                     }
                     .padding(.leading, 30)
                 }
                 .offset(x: -88)
             }// 43+10+89+48
             HStack {
-                ForEach(8..<12) { Int in
+                ForEach(8..<12) { index in
                     Button {
-                        
+                        viewmodel.tapSound = viewmodel.allSounds[index]
                     } label: {
-                        Image("deo")
+                        Image(viewmodel.allSounds[index].name)
+                            .opacity(viewmodel.allSounds[index].isActivate ? 1 : 0.4)
                     }
                     .padding(.trailing, 30)
                 }
                 .offset(x: 67)
                 Spacer()
-                ForEach(12..<15) { Int in
+                ForEach(12..<15) { index in
                     Button {
-                        
+                        viewmodel.tapSound = viewmodel.allSounds[index]
                     } label: {
-                        Image("deo")
+                        Image(viewmodel.allSounds[index].name)
+                            .opacity(viewmodel.allSounds[index].isActivate ? 1 : 0.4)
                     }
                     .padding(.leading, 30)
                 }

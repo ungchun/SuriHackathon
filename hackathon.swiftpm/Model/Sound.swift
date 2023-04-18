@@ -21,19 +21,18 @@ struct Sound {
     }
     
     func play() {
-        
-        print(mp3)
-//        if self.mp3 == "" { return }
-//
-//        var audioPlayer: AVAudioPlayer?
-//        guard let soundURL = Bundle.main.url(forResource: mp3, withExtension: "mp3") else { return }
-//
-//        do {
-//            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
-//            audioPlayer?.play()
-//        } catch {
-//            print("Error playing sound: \(error.localizedDescription)")
-//        }
+        if self.mp3 == "" { return }
+
+        print("mp3")
+        var audioPlayer: AVAudioPlayer?
+        guard let soundURL = Bundle.main.url(forResource: mp3, withExtension: "mp3") else { return }
+
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
+            audioPlayer?.play()
+        } catch {
+            print("Error playing sound: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -107,14 +106,21 @@ extension Instrumental {
     }
 }
 
-struct MusicSheetSection {
+struct MusicSheetSection: Equatable, Identifiable {
+    
+    static func == (lhs: MusicSheetSection, rhs: MusicSheetSection) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
     
     static var Empty = MusicSheetSection(buk: .Empty, janggu: .Empty, kkwaenggwari: .Empty, jing: .Empty)
     
+    var id: Int = 0
     var buk: Sound
     var janggu: Sound
     var kkwaenggwari: Sound
     var jing: Sound
+    
     
     func playTheSection() {
         buk.play()
@@ -126,17 +132,15 @@ struct MusicSheetSection {
 
 struct MusicSheet {
     
-    static var Empty = MusicSheet(musicSheetSection: [])
+    static var Empty = MusicSheet()
     
     var musicSheetSection: [MusicSheetSection] // 16개
     
-    func playTheMusic() {
-        for time in 0 ..< musicSheetSection.count {
-            let x: Int32 = Int32(time)
-            let when = DispatchTime.now() + DispatchTimeInterval.nanoseconds(1 * Int(x))
-            DispatchQueue.global().asyncAfter(deadline: when) {
-                self.musicSheetSection[time].playTheSection()
-            }
+    init(){
+        var array = [MusicSheetSection]()
+        for index in 0...15 {
+            array.append(MusicSheetSection(id: index, buk: Sound.Empty, janggu: Sound.Empty, kkwaenggwari: Sound.Empty, jing: Sound.Empty))
         }
+        self.musicSheetSection = array
     }
 }

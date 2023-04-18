@@ -25,6 +25,7 @@ class MainViewModel: ObservableObject {
     
     @Published var tapSectionNInstrumental: (sectionIndex: Int, instrumental: Instrumental) = (0, .none)
     @Published var tapPlay: Bool = false
+    @Published var sectionIndex: Int = 0
     
     // Instrument Activate
     @Published var isBukActivate: Void = ()
@@ -53,6 +54,7 @@ class MainViewModel: ObservableObject {
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
+                print("go")
                 if self.tapPlay {
                     self.playIndex += 1
                 }
@@ -89,6 +91,7 @@ class MainViewModel: ObservableObject {
                     break
                 }
                 
+                self.sectionIndex = index
                 self.currentSection = self.musicSheet.musicSheetSection[index]
             }
             .store(in: &bag)
@@ -111,6 +114,7 @@ class MainViewModel: ObservableObject {
                 case .jing:
                     self.currentSection.jing = sound
                 }
+                self.musicSheet.musicSheetSection[self.sectionIndex] = self.currentSection
             }
             .store(in: &bag)
         

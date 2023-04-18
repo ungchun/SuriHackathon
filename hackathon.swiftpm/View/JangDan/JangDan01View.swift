@@ -18,5 +18,6 @@ struct JangDan01View: View {
                     CustomBackButton()
                 }
             }
+            .navigationBarBackButtonHidden()
     }
 }
