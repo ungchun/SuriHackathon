@@ -30,6 +30,13 @@ let package = Package(
                 .landscapeRight,
                 .landscapeLeft,
                 .portraitUpsideDown(.when(deviceFamilies: [.pad]))
+            ],
+            capabilities: [
+                .fileAccess(.userSelectedFiles, mode: .readWrite),
+                .fileAccess(.downloadsFolder, mode: .readWrite),
+                .fileAccess(.pictureFolder, mode: .readWrite),
+                .fileAccess(.musicFolder, mode: .readWrite),
+                .fileAccess(.moviesFolder, mode: .readWrite)
             ]
         )
     ],
