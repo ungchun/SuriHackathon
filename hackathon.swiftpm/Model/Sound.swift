@@ -20,14 +20,27 @@ struct Sound {
 }
 
 
-enum Instrumental {
-    
+enum Instrumental: Identifiable {
     case none
     case buk
     case janggu
     case kkwaenggwari
     case jing
-    
+
+    var id: Int {
+        switch self {
+        case .none:
+            return 0
+        case .buk:
+            return 1
+        case .janggu:
+            return 2
+        case .kkwaenggwari:
+            return 3
+        case .jing:
+            return 4
+        }
+    }
 }
 
 extension Instrumental {
