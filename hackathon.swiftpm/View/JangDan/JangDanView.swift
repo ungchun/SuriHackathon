@@ -14,7 +14,6 @@ struct JangDanView: View {
                 Text("JANG DAN")
                     .font(.custom("Kavivanar-Regular", size: 24))
                     .underline()
-                    .padding(43)
                 
                 Image("SH_jangdan")
                     .resizable()
@@ -47,7 +46,6 @@ struct JangDanView: View {
                             }
                             Spacer()
                         }
-                        
                     }
             }
         }
