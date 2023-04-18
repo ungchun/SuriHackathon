@@ -3,7 +3,7 @@ import SwiftUI
 struct MainView: View {
     var body: some View {
         ZStack {
-            Color(hex: 0xF5F5F5)
+            Color(hex: 0xFFFDF2)
             VStack(spacing: 0) {
                 OnTheInstrumentView()
                 InstrumentView()
@@ -22,8 +22,14 @@ struct OnTheInstrumentView: View {
             Image("topLeading")
                 .offset(x: 40, y: 40)
             Spacer()
-            Image("topTrailing")
-                .offset(x: -40, y: 40)
+            Button {
+                
+            } label: {
+                Image("topTrailing")
+            }
+            .offset(x: -40, y: 40)
+            
+                
         }
         Button {
             
@@ -50,28 +56,20 @@ struct InstrumentView: View {
 }
 
 struct EachInstrumentView: View {
+    
+    @State var isActive: [Bool] = [true, true, true, true]
+    
+    let activeImage = ["buk", "kkwaenggawari", "janggu", "instJing"]
+    let unactiveImage = ["unactiveBuk", "unactiveKkwaenggawari", "unactiveJanggu", "unactiveJing"]
+    
     var body: some View {
         HStack(spacing: 66) {
-            Button {
-                
-            } label: {
-                // bool ? buk : unactive
-                Image("buk")
-            }
-            Button {
-                
-            } label: {
-                Image("kkwaenggawari")
-            }
-            Button {
-                
-            } label: {
-                Image("janggu")
-            }
-            Button {
-                
-            } label: {
-                Image("instJing")
+            ForEach(0..<4) { index in
+                Button {
+                    isActive[index].toggle()
+                } label: {
+                    Image(isActive[index] ? activeImage[index] : unactiveImage[index])
+                }
             }
         }
     }
@@ -92,7 +90,7 @@ struct NoteView: View {
                     HStack(spacing: 0) {
                         ForEach(1..<16) { index in
                             Rectangle()
-                                .fill(.white)
+                                .fill(Color(hex: 0xFFFDF2))
                                 .frame(width: buttonWidth, height: buttonHeight)
                                 .border(.black)
                                 .overlay(
