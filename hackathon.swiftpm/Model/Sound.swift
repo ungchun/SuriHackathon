@@ -6,11 +6,41 @@
 //
 
 struct Instrumentals {
-   
-    var sounds: [Sounds]
-    var row: Int
-    var col: Int
+    var type:
+    
 }
+
+enum InstrumentalsType {
+    
+    case none
+    case buk
+    case janggu
+    case kkwaenggwari
+    case jing
+    
+}
+
+extension InstrumentalsType{
+
+    var name: String {
+        switch self {
+        case .none:
+            return ""
+        case .buk:
+            return "buk"
+        case .janggu:
+            return "janggu"
+        case .kkwaenggwari:
+            <#code#>
+        case .jing:
+            <#code#>
+        }
+    }
+}
+
+
+
+
 
 enum Sounds {
     case none

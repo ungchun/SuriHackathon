@@ -10,10 +10,6 @@ import SwiftUI
 
 struct CardView: View {
     var body: some View {
-<<<<<<< HEAD
-       Text("abcdefg")
-            .font(Font.custom("Kavivanar-Regular.ttf", size: 25))
-=======
         VStack {
             HStack {
                 TabView {
@@ -40,7 +36,6 @@ struct CardView: View {
             .tabViewStyle(PageTabViewStyle())
         }
         .padding()
->>>>>>> 15d40d59b20c9d904a6d59f4fa49eca52c5cfa85
     }
 }
 
