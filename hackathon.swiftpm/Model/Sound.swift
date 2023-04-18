@@ -76,8 +76,8 @@ extension Sounds {
     var type: SoundType {
         switch self {
             
-        case .none: break
-            
+        case .none:
+            return .none
         case .deong, .gideok, .deo, .kung, .deoreoreoreo, .deok:
             return .janggu
         case .gae, .gaen, .gaeng, .ji, .gaet, .jigaeng:
@@ -86,7 +86,6 @@ extension Sounds {
             return .buk
         case .jing:
             return .jing
-        
         }
     }
     
