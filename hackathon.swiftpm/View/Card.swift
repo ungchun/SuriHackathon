@@ -10,15 +10,8 @@ import SwiftUI
 
 struct CardView: View {
     var body: some View {
-        VStack {
-            HStack {
-                Card()
-                Card()
-                Card()
-                Card()
-            }
-        }
-        .padding()
+       Text("abcdefg")
+            .font(Font.custom("Kavivanar-Regular.ttf", size: 25))
     }
 }
 
