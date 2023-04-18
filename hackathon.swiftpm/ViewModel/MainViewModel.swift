@@ -6,6 +6,7 @@
 //
 
 import Combine
+import AVFoundation
 import SwiftUI
 
 class MainViewModel: ObservableObject {
@@ -36,17 +37,27 @@ class MainViewModel: ObservableObject {
     // MARK: - Only use in viewmodel
     @Published var playIndex: Int = 0
     private var timer: AnyCancellable?
+    var audio = AVAudioEngine()
     
     init() {
+        $tapPlay
+            .dropFirst()
+            .eraseToAnyPublisher()
+            .sink { [weak self] _ in
+               
+                
+            }
+            .store(in: &bag)
         
         $playIndex
             .eraseToAnyPublisher()
             .dropFirst()
             .sink { [weak self] index in
                 guard let self = self else { return }
+                print(index)
                 
                 self.currentSection = self.musicSheet.musicSheetSection[index]
-                self.currentSection.playTheSection()
+                self.currentSection.playTheSection(audioEngine3: self.audio)
             }
             .store(in: &bag)
         

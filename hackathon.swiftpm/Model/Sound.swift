@@ -20,20 +20,6 @@ struct Sound {
         self = Sound.Empty
     }
     
-    func play() {
-        if self.mp3 == "" { return }
-
-        print("mp3")
-        var audioPlayer: AVAudioPlayer?
-        guard let soundURL = Bundle.main.url(forResource: mp3, withExtension: "mp3") else { return }
-
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: soundURL)
-            audioPlayer?.play()
-        } catch {
-            print("Error playing sound: \(error.localizedDescription)")
-        }
-    }
 }
 
 extension Sound {
@@ -122,11 +108,91 @@ struct MusicSheetSection: Equatable, Identifiable {
     var jing: Sound
     
     
-    func playTheSection() {
-        buk.play()
-        janggu.play()
-        kkwaenggwari.play()
-        janggu.play()
+    func playTheSection(audioEngine3: AVAudioEngine) {
+        
+        let soundFileNames = [buk.mp3, kkwaenggwari.mp3, jing.mp3, janggu.mp3]
+        GSAudio.sharedInstance.playSounds(soundFileNames: soundFileNames, withDelay: 1.0)
+//        print(buk.mp3)
+//        print(kkwaenggwari.mp3)
+//        print(janggu.mp3)
+//        print(jing.mp3)
+//
+//        let player1 = AVAudioPlayerNode()
+//        let player2 = AVAudioPlayerNode()
+//        let player3 = AVAudioPlayerNode()
+//        let player4 = AVAudioPlayerNode()
+//
+//        var a: AVAudioFile?
+//        var b: AVAudioFile?
+//        var c: AVAudioFile?
+//        var d: AVAudioFile?
+//
+//        var audioEngine = AVAudioEngine()
+//
+//
+//        let url2 = Bundle.main.url(forResource: kkwaenggwari.mp3, withExtension: "mp3")!
+//
+//        let url3 = Bundle.main.url(forResource: janggu.mp3, withExtension: "mp3")!
+//
+//        let url4 = Bundle.main.url(forResource: jing.mp3, withExtension: "mp3")!
+//
+//        let url1 = Bundle.main.url(forResource: buk.mp3, withExtension: "mp3")!
+//        do {
+//            a = try AVAudioFile(forReading: url1)
+//            b = try AVAudioFile(forReading: url2)
+//            c = try AVAudioFile(forReading: url3)
+//            d = try AVAudioFile(forReading: url4)
+//
+//        } catch let error {
+//            print(error)
+//            return
+//        }
+//
+////        audioEngine.attach(player1)
+////        audioEngine.attach(player2)
+////        audioEngine.attach(player3)
+////        audioEngine.attach(player4)
+//
+//        let mixer = audioEngine.mainMixerNode
+//        audioEngine.attach(mixer)
+//
+//
+//
+//        let aoutput = audioEngine.outputNode
+//        let boutput = audioEngine.outputNode
+//        let coutput = audioEngine.outputNode
+//        let doutput = audioEngine.outputNode
+//
+//        let af = aoutput.inputFormat(forBus: 0)
+//        let bf = aoutput.inputFormat(forBus: 1)
+//        let cf = aoutput.inputFormat(forBus: 2)
+//        let df = aoutput.inputFormat(forBus: 3)
+//
+//        audioEngine.connect(mixer, to: aoutput, format: nil)
+//        audioEngine.connect(mixer, to: boutput, format: nil)
+//        audioEngine.connect(mixer, to: coutput, format: nil)
+//        audioEngine.connect(mixer, to: doutput, format: nil)
+//
+//        audioEngine.connect(player1, to: mixer, format: af)//a!.processingFormat)
+//        audioEngine.connect(player2, to: mixer, format: bf)//b!.processingFormat)
+//        audioEngine.connect(player3, to: mixer, format: cf)//c!.processingFormat)
+//        audioEngine.connect(player4, to: mixer, format: df)//d!.processingFormat)
+//
+//        player1.scheduleFile(a!, at: nil, completionHandler: nil)
+//        player2.scheduleFile(b!, at: nil, completionHandler: nil)
+//        player3.scheduleFile(c!, at: nil, completionHandler: nil)
+//        player4.scheduleFile(d!, at: nil, completionHandler: nil)
+//
+//        do {
+//            try audioEngine.start()
+//        } catch { print() }
+//
+//
+//        player1.play()
+//        player2.play()
+//        player3.play()
+//        player4.play()
+
     }
 }
 
@@ -142,5 +208,9 @@ struct MusicSheet {
             array.append(MusicSheetSection(id: index, buk: Sound.Empty, janggu: Sound.Empty, kkwaenggwari: Sound.Empty, jing: Sound.Empty))
         }
         self.musicSheetSection = array
+    }
+    
+    init(musicSheetSection: [MusicSheetSection]) {
+        self.musicSheetSection = musicSheetSection
     }
 }
