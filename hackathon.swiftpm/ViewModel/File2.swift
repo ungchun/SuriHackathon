@@ -9,7 +9,7 @@ import Combine
 import AVFoundation
 import SwiftUI
 
-class MainViewModel: ObservableObject {
+class MainViewModels: ObservableObject {
     
     var bag = Set<AnyCancellable>()
     
@@ -37,29 +37,60 @@ class MainViewModel: ObservableObject {
     // MARK: - Only use in viewmodel
     @Published var playIndex: Int = 0
     private var timer: AnyCancellable?
+    var audio = AVAudioEngine()
+    
+    // sunghun
+    var soundPlayer: AVAudioPlayer?
+    var soundPlayer2: AVAudioPlayer?
+    var soundPlayer3: AVAudioPlayer?
+    
+    // 이렇게 만들 수 있을 듯
+    // 시작전에 동적으로 AVAudioPlayer 담겨있는 소리들..? count 만큼 만들어서 세팅?
+    var soundPlayer4: AVAudioPlayer?
+    var soundPlayer5: AVAudioPlayer?
+    var soundPlayer6: AVAudioPlayer?
+    var soundPlayer7: AVAudioPlayer?
+    
+    func prepareSound() {
+        // 이렇게 해보니 징소리랑 꽹과리랑 장구 소리가 같이 들림.
+        let path = Bundle.main.path(forResource: "jing1.mp3", ofType: nil)!
+        let url = URL(fileURLWithPath: path)
+        
+        let path2 = Bundle.main.path(forResource: "kkwaenggwari4.mp3", ofType: nil)!
+        let url2 = URL(fileURLWithPath: path2)
+        
+        let path3 = Bundle.main.path(forResource: "janggu1.mp3", ofType: nil)!
+        let url3 = URL(fileURLWithPath: path3)
+        
+        // play 전에 미리 메모리에 로드해두고 준비하는 것이라고함.
+        do {
+            soundPlayer = try AVAudioPlayer(contentsOf: url)
+            soundPlayer?.prepareToPlay()
+            
+            soundPlayer2 = try AVAudioPlayer(contentsOf: url2)
+            soundPlayer2?.prepareToPlay()
+            
+            soundPlayer3 = try AVAudioPlayer(contentsOf: url3)
+            soundPlayer3?.prepareToPlay()
+            print("ready")
+        } catch {
+            // error
+        }
+    }
     
     init() {
-        
-        _ = Players.shared
+        // init에서 미리 세팅
+        prepareSound()
         
         $tapPlay
             .dropFirst()
             .eraseToAnyPublisher()
             .sink { [weak self] _ in
-                guard let self = self else { return }
-//                Sound(instrumental: .jing, name: "", isActivate: false, mp3: "buk1")
-//                    .playTheSound()
-                print("music play")
-            }
-            .store(in: &bag)
-        
-        $tapPause
-            .eraseToAnyPublisher()
-            .dropFirst()
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                
-                self.tapPlay = false
+                // 실행
+                print("start")
+                self?.soundPlayer?.play()
+                self?.soundPlayer2?.play()
+                self?.soundPlayer3?.play()
             }
             .store(in: &bag)
         
@@ -71,30 +102,26 @@ class MainViewModel: ObservableObject {
                 print(index)
                 
                 self.currentSection = self.musicSheet.musicSheetSection[index]
-                self.sectionIndex = index
                 self.currentSection.playTheSection()
             }
             .store(in: &bag)
         
-        timer = Timer.publish(every: 0.5, on: .main, in: .common)
+        timer = Timer.publish(every: 2, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 guard let self = self else { return }
-                
+                print("go")
                 if self.tapPlay {
-                    if self.playIndex + 1 < self.musicSheet.musicSheetSection.count {
-                        self.playIndex += 1
-                    }
-                    else {
-                        self.playIndex = 0
-                        self.currentSection = self.musicSheet.musicSheetSection[0]
-                        self.tapPause = true
-                        self.tapPlay = false
-                    }
-                    
+                    self.playIndex += 1
+                }
+                else if self.tapPause {
+                    self.timer?.cancel()
+                }
+                else {
+                    self.timer?.cancel()
+                    self.timer = nil
                 }
             }
-       
         
         $tapSectionNInstrumental
             .eraseToAnyPublisher()

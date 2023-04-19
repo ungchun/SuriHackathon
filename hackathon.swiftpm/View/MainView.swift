@@ -191,12 +191,12 @@ struct PlayPauseStopRedoView: View {
                     Image("play")
                 }
                 Button {
-                    
+                    viewmodel.tapPause = true
                 } label: {
                     Image("pause")
                 }
                 Button {
-                    
+                    viewmodel.playIndex = 0
                 } label: {
                     Image("stop")
                 }
