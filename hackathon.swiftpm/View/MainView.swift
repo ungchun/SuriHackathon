@@ -205,7 +205,9 @@ struct PlayPauseStopRedoView: View {
             HStack {
                 Spacer()
                 Button {
-                    
+                    viewmodel.musicSheet = MusicSheet()
+                    viewmodel.currentSection = viewmodel.musicSheet.musicSheetSection[0]
+                    viewmodel.playIndex = 0
                 } label: {
                     Image("redo")
                 }
